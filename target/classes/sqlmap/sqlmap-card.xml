@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cardDAO">
+
+	<select id="getCard" parameterType="int" resultType="cvo">
+		SELECT * FROM colla_card WHERE b_fk = #{bFK} ORDER BY pos
+	</select>
+
+	 <insert id="cardwrite" parameterType="cvo">
+   		<selectKey keyProperty="cFk" resultType="int" order="AFTER">
+   			SELECT Max(c_fk) from colla_card
+   		</selectKey>
+   		INSERT INTO colla_card VALUES(#{bFk}, #{lFk}, c_fk_seq.nextval, #{cTitle}, #{cDescription}, #{cCreate}, #{cDeadline}, 'false', c_pos_seq.nextval)
+   </insert>
+
+	<update id="updatelFkaboutsortable" parameterType="csvo">
+		UPDATE colla_card SET l_fk = #{stopParent} WHERE c_fk = #{startcFk}
+	</update>
+
+	<update id="cardsort" parameterType="csvo">
+		UPDATE colla_card SET pos =
+		(SELECT (MAX(pos)+MIN(pos))/2 FROM
+		(SELECT pos FROM colla_card WHERE c_fk=#{beforecFk} OR c_fk=#{nextcFk}))
+		WHERE c_fk = #{startcFk}
+	</update>
+
+	<update id="firstindexsort" parameterType="csvo">
+		UPDATE colla_card SET pos = 0.1
+
+	</update>
+	<update id="beforezerosort" parameterType="csvo">
+		UPDATE colla_card SET pos = (SELECT pos-0.05 FROM colla_card WHERE c_fk =
+		#{nextcFk}) WHERE c_fk = #{startcFk}
+	</update>
+	<update id="nextzerosort" parameterType="csvo">
+		UPDATE colla_card SET pos = c_pos_seq.nextval where c_fk = #{startcFk}
+	</update>
+	
+	<select id="forpush" parameterType="int" resultType="cvo">
+		SELECT * FROM colla_card WHERE c_fk = #{cFk}
+	</select>
+	
+	<select id="cardread" parameterType="int" resultType="cvo">
+		SELECT * FROM colla_card WHERE c_Fk = #{cFk}
+	</select>
+	
+	<update id="updatetitle" parameterType="cvo">
+		UPDATE colla_card SET c_title = #{cTitle} WHERE c_fk = #{cFk} 
+	</update>
+</mapper>

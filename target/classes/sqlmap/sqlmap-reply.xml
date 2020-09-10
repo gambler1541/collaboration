@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="replyDAO">
+   <select id="getReply" parameterType="int" resultType="rvo">
+      SELECT * FROM colla_reply WHERE c_fk = #{cFk} ORDER BY r_index
+   </select>
+   
+   <insert id="replywrite" parameterType="rvo">
+      INSERT INTO colla_reply VALUES (#{bFk}, #{lFk}, #{cFk}, r_index_seq.nextval, #{rWriter}, #{rContent})
+   </insert>
+</mapper>

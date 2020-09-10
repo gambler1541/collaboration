@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="listDAO">
+	<select id="getList" parameterType="int" resultType="lvo">
+		SELECT * FROM colla_list WHERE b_fk = #{bFk} ORDER BY pos
+	</select>
+
+
+	<insert id="addList" parameterType="lvo">
+		<selectKey keyProperty="lFk" resultType="int" order="AFTER">
+			SELECT
+			MAX(l_fk) as lFk from colla_list
+		</selectKey>
+		INSERT INTO colla_list(b_fk, l_fk, pos) VALUES(#{bFk},
+		l_fk_seq.nextval, l_pos_seq.nextval)
+	</insert>
+
+	<select id="selectlistobj" parameterType="int" resultType="lvo">
+		SELECT * FROM colla_list WHERE l_fk = #{lFk}
+	</select>
+
+	<update id="updateList" parameterType="lvo">
+		UPDATE colla_list SET l_title = #{lTitle} WHERE l_fk = #{lFk}
+	</update>
+
+	<update id="updateListTitle" parameterType="lvo">
+		UPDATE colla_list SET l_title = #{lTitle} WHERE l_fk = #{lFk} AND b_fk =
+		#{bFk}
+	</update>
+
+	<update id="listsort" parameterType="lvo">
+		UPDATE colla_list SET pos =
+		(SELECT (MAX(pos)+MIN(pos))/2 FROM
+		(SELECT pos FROM colla_list WHERE l_fk=#{beforelFk} OR l_fk=#{nextlFk}))
+		WHERE l_fk = #{lFk}
+	</update>
+
+	<update id="zeronextlfk" parameterType="lvo">
+		UPDATE colla_list SET pos = l_pos_seq.nextval where l_fk = #{lFk}
+	</update>
+	<update id="zerobeforelfk" parameterType="lvo">
+		UPDATE colla_list SET pos = 0.1 WHERE l_fk = #{lFk}
+	</update>
+
+
+</mapper>

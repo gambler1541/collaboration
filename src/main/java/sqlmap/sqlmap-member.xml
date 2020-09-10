@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="memberDAO">
+
+	<insert id="join" parameterType="vo">
+		INSERT INTO colla_member(email,password,name)
+		VALUES(#{email},#{password},#{name})
+	</insert>
+
+	<select id="select" parameterType="String" resultType="vo">
+		SELECT * FROM colla_member WHERE email = #{email}
+	</select>
+
+	<select id="emailCheck" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM COLLA_MEMBER WHERE EMAIL = #{email}
+	</select>
+
+	<select id="search" parameterType="String" resultType="String">
+		SELECT email FROM colla_member WHERE email like '%' || #{search} || '%'
+	</select>
+
+	<insert id="withmemberinsert" parameterType="wmvo">
+		INSERT INTO b_member VALUES (#{n},#{withMember})
+
+	</insert>
+
+	<update id="memberUpdate" parameterType="vo">
+		UPDATE colla_member set name = #{name} WHERE email = #{email}
+	</update>
+
+	<update id="imgUpload" parameterType="vo">
+		UPDATE colla_member set img = #{img} WHERE email = #{email}
+	</update>
+
+	<select id="bMemberList" parameterType="int" resultType="bmvo">
+		select * from b_member where b_fk = #{bFk}
+	</select>
+
+	<update id="passwdUpdate" parameterType="vo">
+		UPDATE colla_member set
+		password = #{password} WHERE email = #{email}
+	</update>
+	<select id="getPassword" parameterType="vo" resultType="String">
+		SELECT
+		password FROM colla_member WHERE email = #{email}
+	</select>
+	
+	<insert id="insertcardmember" parameterType="wmvo">
+  		  insert into c_member values(#{n}, #{withMember}) 
+  	 </insert>
+  	 
+  	 <select id="getcmember" parameterType="String" resultType="cmvo">
+  	 	SELECT * FROM c_member WHERE c_member = #{email}
+  	 
+  	 </select>
+  	 
+  	 <!-- 회원탈퇴 -->
+   <delete id="withdrawal" parameterType="vo">
+      DELETE FROM colla_member WHERE email = #{email} AND password = #{password}
+   </delete>
+</mapper>
+   

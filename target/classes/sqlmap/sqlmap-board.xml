@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardDAO">
+   <select id="boardlist" parameterType="String" resultType="bvo">
+      SELECT * FROM colla_board WHERE b_fk IN (SELECT b_fk FROM b_member WHERE
+      b_member = #{email})
+   </select>
+
+   <insert id="insertboard" parameterType="bvo">
+      <selectKey keyProperty="bFk" resultType="int" order="AFTER">
+         SELECT Max(b_fk) from colla_board
+      </selectKey>
+      INSERT INTO colla_board
+      VALUES(b_fk_seq.nextval,#{bLeader},#{bTitle},#{bContent})
+   </insert>
+   
+   <select id="selectboard" parameterType="int" resultType="bvo">
+      SELECT * FROM colla_board WHERE b_fk = #{b_fk}
+   </select>
+
+	<select id="searchBoard" parameterType="hashMap" resultType="bvo">
+   		select * from colla_board WHERE b_title LIKE '%'||#{keyword}||'%' AND b_fk IN (SELECT b_fk FROM b_member WHERE b_member = #{email})
+   </select>
+   
+   <select id="selectLeader" parameterType="int" resultType="String">
+      SELECT b_leader FROM colla_board WHERE b_fk = #{bFk}
+   </select>
+
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FROM colla_board WHERE b_fk = #{bFk}
+	</delete>
+</mapper>
+   
